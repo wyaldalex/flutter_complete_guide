@@ -17,21 +17,42 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var currentQuestion = 0;
+  var _totalScore = 0;
 
   static const questionsListMap = [
     {
       'questionText': 'What is your favorite color?',
-      'answers': ['Red', 'Green', 'Yellow']
+      'answers': [
+        {'answerText': 'Red', 'answerPoints': 10},
+        {'answerText': 'Green', 'answerPoints': 1},
+        {'answerText': 'Yellow', 'answerPoints': 5}
+      ]
     },
     {
       'questionText': 'What is your favorite animal?',
-      'answers': ['PANDA', 'DOG', 'TIGER']
+      'answers': [
+        {'answerText': 'TIGER', 'answerPoints': 10},
+        {'answerText': 'Hamster', 'answerPoints': 1},
+        {'answerText': 'Panda', 'answerPoints': 5}
+      ]
     },
     {
       'questionText': 'What is your favorite tv show?',
-      'answers': ['GOTR', 'FRIENDS', 'SEX ED', 'LAW & ORDER']
+      'answers': [
+        {'answerText': 'GOT', 'answerPoints': 10},
+        {'answerText': 'Nip Tuck', 'answerPoints': 8},
+        {'answerText': 'Sesame Street', 'answerPoints': 1},
+        {'answerText': 'SEX ED', 'answerPoints': 5}
+      ]
     }
   ];
+
+  void _resetQuiz(){
+    setState(() {
+      _totalScore =0;
+      currentQuestion=0;
+    });
+  }
 
   var questions = [
     'What is your favorite color?',
@@ -49,33 +70,12 @@ class _MyAppState extends State<MyApp> {
 
   //String answers = 'asdasdas';
 
-  void answerQuestion() {
-    setState(() {
-      if (currentQuestion == (questions.length - 1)) {
-        currentQuestion = 0;
-      } else {
-        currentQuestion += 1;
-      }
+  void answerQuestion(int score) {
 
-      if (currentQuestion == 0) {
-        default_questions = answers_question_color;
-      } else if (currentQuestion == 1) {
-        default_questions = answers_question_animal;
-      } else {
-        default_questions = answers_question_show;
-      }
-    });
-    print("Something printed");
-  }
+     _totalScore += score;
 
-  void answerQuestionListMap() {
     setState(() {
-      if (currentQuestion <= questionsListMap.length -1) {
         currentQuestion += 1;
-      } else {
-        currentQuestion = 0;
-      }
-      
     });
   }
 
@@ -86,12 +86,12 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: Text('My First App'),
         ),
-        body: currentQuestion < questions.length 
+        body: currentQuestion < questions.length
             ? Quiz(
                 questions: questionsListMap,
                 questionIndex: currentQuestion,
-                answerQuestion: answerQuestionListMap)
-            : Result(answerQuestionListMap),
+                answerQuestion: answerQuestion)
+            : Result(_totalScore, _resetQuiz),
       ),
     );
   }
